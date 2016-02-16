@@ -39,7 +39,7 @@
 
 
                      <li>
-                        <a href="{{ URL::to('leavereports') }}"><i class="fa fa-file fa-fw"></i> Reports</a>
+                        <a href="{{ URL::to('leaveReports') }}"><i class="fa fa-file fa-fw"></i> Reports</a>
                     </li>
                    
                    

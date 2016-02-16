@@ -18,6 +18,10 @@
                     <li>
                         <a href="{{ URL::to('payrollReports/selectPayePeriod') }}" target="_blank"><i class="glyphicon glyphicon-file fa-fw"></i> Paye Returns</a>
                     </li>
+
+                    <li>
+                        <a href="{{ URL::to('payrollReports/selectNssfExcelPeriod') }}" target="_blank"><i class="glyphicon glyphicon-file fa-fw"></i> NSSF EXCEL</a>
+                    </li>
                     
                 </ul>
                 <!-- /#side-menu -->

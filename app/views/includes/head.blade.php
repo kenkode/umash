@@ -84,9 +84,21 @@
 
 $(function(){
 $('.datepicker').datepicker({
-    format: 'dd-M-yyyy',
+    format: 'yyyy-mm-dd',
     startDate: '-60y',
     endDate: '+0d',
+    autoclose: true
+});
+});
+
+</script>
+
+<script type="text/javascript">
+
+$(function(){
+$('.datepicker3').datepicker({
+    format: 'yyyy-mm-dd',
+    startDate: '-60y',
     autoclose: true
 });
 });

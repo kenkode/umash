@@ -32,6 +32,10 @@
 
       </li>
 
+       <li>
+            <a href="{{ URL::to('reports/selectEmployeeOccurence') }}" target="_blank">Employee Occurence report </a>
+        </li>
+
 
       <li>
 

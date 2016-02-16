@@ -1,5 +1,80 @@
 @extends('layouts.main')
 
+{{HTML::script('media/jquery-1.8.0.min.js') }}
+<style>
+#imagePreview {
+    width: 180px;
+    height: 180px;
+    background-position: center center;
+    background-image:url("{{asset('/public/uploads/employees/photo/'.$employee->photo) }}");
+    background-size: cover;
+    -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+    display: inline-block;
+}
+#signPreview {
+    width: 180px;
+    height: 180px;
+    background-position: center center;
+    background-image:url("{{asset('/public/uploads/employees/signature/'.$employee->signature) }}");
+    background-size: cover;
+    -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+    display: inline-block;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+
+
+    $("#uploadFile").on("change", function()
+    {
+        var files = !!this.files ? this.files : [];
+        if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+        
+        if (/^image/.test( files[0].type)){ // only image file
+            var reader = new FileReader(); // instance of the FileReader
+            reader.readAsDataURL(files[0]); // read the local file
+            
+            reader.onloadend = function(){ // set image data as background of div
+                $("#imagePreview").css("background-image", "url("+this.result+")");
+            }
+            }
+    });
+
+    $('#bank_id').change(function(){
+        $.get("{{ url('api/dropdown')}}", 
+        { option: $(this).val() }, 
+        function(data) {
+            $('#bbranch_id').empty(); 
+            $.each(data, function(key, element) {
+                $('#bbranch_id').append("<option value='" + key +"'>" + element + "</option>");
+            });
+        });
+    });
+
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#signFile").on("change", function()
+    {
+        var files = !!this.files ? this.files : [];
+        if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+        
+        if (/^image/.test( files[0].type)){ // only image file
+            var reader = new FileReader(); // instance of the FileReader
+            reader.readAsDataURL(files[0]); // read the local file
+            
+            reader.onloadend = function(){ // set image data as background of div
+                $("#signPreview").css("background-image", "url("+this.result+")");
+            }
+        }
+    });
+});
+</script>
+
 @section('content')
 <br/>
 
@@ -25,7 +100,7 @@
         </div>
         @endif
 
-    <form method="POST" action="{{{ URL::to('employees/update/'.$employee->id) }}}" accept-charset="UTF-8">
+    <form method="POST" action="{{{ URL::to('employees/update/'.$employee->id) }}}" accept-charset="UTF-8" enctype="multipart/form-data">
 
             <div class="row">
             
@@ -141,7 +216,12 @@
                         <input class=""  type="radio" name="gender" id="gender" value="male"<?= ($employee->gender=='male')?'checked="checked"':''; ?>> Male
                         <input class=""  type="radio" name="gender" id="gender" value="female"<?= ($employee->gender=='female')?'checked="checked"':''; ?>> Female
                     </div>
-
+                    
+                    <div class="form-group">
+                        <label for="username">Photo</label><br>
+                        <div id="imagePreview"></div>
+                        <input class="form-control img" placeholder="" type="file" name="image" id="uploadFile" value="">
+                    </div>
                 </fieldset>
 
             </div>
@@ -216,7 +296,7 @@
 
                     <div class="form-group">
                         <label for="username">Bank</label>
-                        <select name="bank_id" class="form-control">
+                        <select id="bank_id" name="bank_id" class="form-control">
                             <option></option>
                             @foreach($banks as $bank)
                             <option value="{{ $bank->id }}"<?= ($employee->bank_id==$bank->id)?'selected="selected"':''; ?>> {{ $bank->bank_name }}</option>
@@ -229,7 +309,7 @@
                       
                      <div class="form-group">
                         <label for="username">Bank Branch</label>
-                        <select name="bbranch_id" class="form-control">
+                        <select id="bbranch_id" name="bbranch_id" class="form-control">
                             <option></option>
                             @foreach($bbranches as $bbranch)
                             <option value="{{$bbranch->id }}"<?= ($employee->bank_branch_id==$bbranch->id)?'selected="selected"':''; ?>> {{ $bbranch->bank_branch_name }}</option>
@@ -253,7 +333,12 @@
                         <label for="username">Swift Code</label>
                         <input class="form-control" placeholder="" type="text" name="swift_code" id="swift_code" value="{{{ $employee->swift_code }}}">
                     </div>
-
+                     <br><br><br>
+                    <div class="form-group">
+                        <label for="username">Signature</label><br>
+                        <div id="signPreview"><img src="{{{ $employee->signature }}}" alt=""></div>
+                        <input class="form-control img" placeholder="" type="file" name="signature" id="signFile" value="{{{ $employee->signature }}}">
+                    </div>
 
               </fieldset>
 
@@ -366,6 +451,7 @@
                     <div style='margin-top:50px'></div>
 
                     </fieldset>
+                     <br><br><br> <br><br><br><br><br><br>
                         <div class="form-actions form-group">
         
                             <button type="submit" class="btn btn-primary btn-sm">Update Employee</button>

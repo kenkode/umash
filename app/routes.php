@@ -1245,6 +1245,24 @@ Route::get('deductions/delete/{id}', 'DeductionsController@destroy');
 Route::get('deductions/edit/{id}', 'DeductionsController@edit');
 
 /*
+* employee documents routes
+*/
+
+Route::resource('documents', 'DocumentsController');
+Route::post('documents/update/{id}', 'DocumentsController@update');
+Route::get('documents/delete/{id}', 'DocumentsController@destroy');
+Route::get('documents/edit/{id}', 'DocumentsController@edit');
+
+/*
+* occurences routes
+*/
+
+Route::resource('occurences', 'OccurencesController');
+Route::post('occurences/update/{id}', 'OccurencesController@update');
+Route::get('occurences/delete/{id}', 'OccurencesController@destroy');
+Route::get('occurences/edit/{id}', 'OccurencesController@edit');
+
+/*
 * nssf routes
 */
 
@@ -1252,6 +1270,15 @@ Route::resource('nssf', 'NssfController');
 Route::post('nssf/update/{id}', 'NssfController@update');
 Route::get('nssf/delete/{id}', 'NssfController@destroy');
 Route::get('nssf/edit/{id}', 'NssfController@edit');
+
+/*
+*overtimes
+*/
+
+Route::resource('overtimes', 'OvertimesController');
+Route::get('overtimes/edit/{id}', 'OvertimesController@edit');
+Route::post('overtimes/update/{id}', 'OvertimesController@update');
+Route::get('overtimes/delete/{id}', 'OvertimesController@destroy');
 
 /*
 * nhif routes

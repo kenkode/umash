@@ -40,6 +40,33 @@ class ReportsController extends \BaseController {
 		
 	}
 
+    public function selEmp()
+    {
+        $employees = Employee::all();
+
+        return View::make('pdf.selectEmployee', compact('employees'));
+    }
+
+    public function occurence(){
+
+        $id = Input::get('employeeid');
+
+        $employee = Employee::find($id);
+
+        $occurences = DB::table('occurences')
+                   ->where('employee_id','=',$id)
+                   ->get();
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('pdf.employeeoccurence', compact( 'employee','organization','occurences'))->setPaper('a4')->setOrientation('potrait');
+    
+        //dd($organization);
+
+        return $pdf->stream($employee->first_name.' '.$employee->last_name.'.pdf');
+        
+    }
+
     public function period_payslip()
   {
     $employees = DB::table('employee')->get();
@@ -326,30 +353,30 @@ class ReportsController extends \BaseController {
 		
 	}
 
+    public function period_excel()
+    {
+        return View::make('pdf.excelSelect');
+    }
+
     public function export(){
-    Excel::create('NssfReport', function($excel) {
+      $period = Input::get("period");
 
-      $excel->sheet('NssfReport', function($sheet) {
-        $period = Input::get("period");
-
-		$total = DB::table('transact')
+        $total = DB::table('transact')
         ->where('financial_month_year' ,'=', Input::get('period'))
-		->sum('nssf_amount');
+        ->sum('nhif_amount');
 
-		$currencies = DB::table('currencies')
+        $currencies = DB::table('currencies')
             ->select('shortname')
             ->get();
 
-		$nssfs = DB::table('transact')
+        $nhifs = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
 
-		$organization = Organization::find(1);
-        $sheet->loadView('pdf.nssfReport.csv', ['nssfs' => $nssfs->toArray()]);
-      });
-    })->download('xls');
-  }
+        $organization = Organization::find(1);
+      return View::make('pdf.ExcelReport',compact('nhifs','total','currencies','period','organization'));
+    }
 
 
     public function period_rem()
@@ -1032,10 +1059,149 @@ class ReportsController extends \BaseController {
 	}
 
 
+    public function appperiod()
+    {
+        return View::make('leavereports.applicationSelect');
+    }
 
-	
+    public function leaveapplications(){
+        
+        $start = Input::get("period");
+        $end = Input::get("period1");
+
+        $apps = DB::table('leaveapplications')
+                    ->join('employee', 'leaveapplications.employee_id', '=', 'employee.id')
+                    ->join('leavetypes', 'leaveapplications.leavetype_id', '=', 'leavetypes.id')
+                    ->whereBetween('application_date', array($start, $end))->get();
 
 
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.applicationReport', compact('apps','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream('Leave_Application_Report.pdf');
+        
+    }
+    public function approvedperiod()
+    {
+        return View::make('leavereports.approvedSelect');
+    }
+
+    public function approvedleaves(){
+        
+        $start = Input::get("period");
+        $end = Input::get("period1");
+
+        $apps = DB::table('leaveapplications')
+                    ->join('employee', 'leaveapplications.employee_id', '=', 'employee.id')
+                    ->join('leavetypes', 'leaveapplications.leavetype_id', '=', 'leavetypes.id')
+                    ->whereBetween('date_approved', array($start, $end))->get();
+
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.approvedReport', compact('apps','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream('Approved_Leave_Report.pdf');
+        
+    }
+
+    public function rejectedperiod()
+    {
+        return View::make('leavereports.rejectedSelect');
+    }
+
+    public function rejectedleaves(){
+        
+        $start = Input::get("period");
+        $end = Input::get("period1");
+
+        $rejs = DB::table('leaveapplications')
+                    ->join('employee', 'leaveapplications.employee_id', '=', 'employee.id')
+                    ->join('leavetypes', 'leaveapplications.leavetype_id', '=', 'leavetypes.id')
+                    ->whereBetween('date_rejected', array($start, $end))->get();
+
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.rejectedReport', compact('rejs','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream('Rejected_Leave_Report.pdf');
+        
+    }
+    public function balanceselect()
+    {
+        $leaves = Leavetype::all();
+        return View::make('leavereports.balanceSelect',compact('leaves'));
+    }
+
+    public function leavebalances(){
+        
+        $id = Input::get("balance");
+
+        $leavetype = Leavetype::find($id);
+        
+        $employees= Employee::all();
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.balanceReport', compact('employees','leavetype','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream($leavetype->name.'_balances_Report.pdf');
+        
+    }
+
+    public function leaveselect()
+    {
+        $leaves = Leavetype::all();
+        return View::make('leavereports.leaveSelect',compact('leaves'));
+    }
+
+    public function employeesleave(){
+        
+         
+        $id = Input::get("balance");
+
+        $leavetype = Leavetype::find($id);
+
+        $emps = DB::table('leaveapplications')
+                    ->join('employee', 'leaveapplications.employee_id', '=', 'employee.id')
+                    ->join('leavetypes', 'leaveapplications.leavetype_id', '=', 'leavetypes.id')
+                    ->where('leavetype_id','=',$id)
+                    ->where('date_approved','!=','NULL')
+                    ->get();
+
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.employeeReport', compact('emps','leavetype','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream('Employees_on_Leave_Report.pdf');
+        
+    }
+
+    public function employeeselect()
+    {
+        $employees = Employee::all();
+        return View::make('leavereports.employeeSelect',compact('employees'));
+    }
+
+    public function individualleave(){
+        
+         
+        $id = Input::get("employeeid");
+
+        $employee = Employee::find($id);
+
+        $leavetypes = Leavetype::all();
+
+        $organization = Organization::find(1);
+
+        $pdf = PDF::loadView('leavereports.individualReport', compact('leavetypes','employee','organization'))->setPaper('a4')->setOrientation('potrait');
+    
+        return $pdf->stream($employee->first_name.'_'.$employee->last_name.'_Leave_Report.pdf');
+        
+    }
 	
 
 }

@@ -14,12 +14,12 @@
                   </li>
 
                   <li>
-                    <a href="{{ URL::to('clients') }}"><i class="glyphicon glyphicon-user fa-fw"></i> Clients</a>
-                  </li>  
+                    <a href="{{ URL::to('customers') }}"><i class="glyphicon glyphicon-user fa-fw"></i> Customers</a>
+                  </li>
 
                   <li>
-                    <a href="{{ URL::to('expenses') }}"><i class="glyphicon glyphicon-list fa-fw"></i> Expenses</a>
-                  </li> 
+                    <a href="{{ URL::to('suppliers') }}"><i class="glyphicon glyphicon-user fa-fw"></i> Suppliers</a>
+                  </li>    
                
                   <li>
                     <a href="{{ URL::to('salesorders') }}"><i class="glyphicon glyphicon-list fa-fw"></i> Sales Orders</a>
@@ -51,7 +51,7 @@
 
 
                   <li>
-                    <a href="{{ URL::to('erpReports') }}"><i class="glyphicon glyphicon-folder-open fa-fw"></i>  Reports</a>
+                    <a href="{{ URL::to('erpreports') }}"><i class="glyphicon glyphicon-folder-open fa-fw"></i>  Reports</a>
                   </li>   
 
 

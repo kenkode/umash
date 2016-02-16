@@ -7,7 +7,7 @@
                       <div class="col-md-2">
                         <a class="btn btn-default btn-icon input-block-level" href="{{ URL::to('employees')}}">
                           <i class="fa fa-users fa-2x"></i>
-                          <div>Manage Employess</div>
+                          <div>Manage Employees</div>
                           
                         </a>
                       </div>
@@ -44,6 +44,7 @@
 <div class="row">
   
   <div class="col-lg-12">
+
     <hr>
 
   </div>
@@ -55,6 +56,21 @@
 
 
   <div class="col-lg-12">
+
+   
+   @if (Session::has('flash_message'))
+
+      <div class="alert alert-success">
+      {{ Session::get('flash_message') }}
+     </div>
+    @endif
+
+     @if (Session::has('delete_message'))
+
+      <div class="alert alert-danger">
+      {{ Session::get('delete_message') }}
+     </div>
+    @endif
 
 
    <div class="panel panel-default">
@@ -108,7 +124,7 @@
 
                     <li><a href="{{URL::to('employees/edit/'.$employee->id)}}">Update</a></li>
                    
-                    <li><a href="{{URL::to('employees/delete/'.$employee->id)}}">Delete</a></li>
+                    <li><a href="{{URL::to('employees/delete/'.$employee->id)}}" onclick="return (confirm('Are you sure you want to delete this employee?'))">Delete</a></li>
                     
                   </ul>
               </div>
